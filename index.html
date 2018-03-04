@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tracked Controls</title>
+    <meta name="description" content="Tracked Controls – A-Frame">
+    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+    <script src="components/aabb-collider.js"></script>
+    <script src="components/multigrab.js"></script>
+    <script src="components/ground.js"></script>
+    <script src="shaders/skyGradient.js"></script>
+	<script type="text/javascript">
+	function setOrigPos()
+	{
+		elementList = document.querySelectorAll(".sphere");
+		for(i = 0; i < elementList.length ; i++){
+			pos = elementList[i].getAttribute("position");
+			elementList[i].setAttribute("origpos", pos.x + " " + pos.y + " " + pos.z);
+		}
+	}
+	
+	function resetPos()
+	{
+		elementList = document.querySelectorAll(".sphere");
+		for(i = 0; i < elementList.length ; i++){
+			pos = elementList[i].getAttribute("origpos");
+			console.log(pos);
+			elementList[i].setAttribute("position", pos);
+		}
+		console.log(pos);
+	}
+	
+	document.addEventListener('keydown',function(e){
+		e = e || window.event;
+		var key = e.which || e.keyCode;
+		if(key===82){
+			resetPos();
+		}
+	});
+	
+	document.addEventListener('DOMContentLoaded', setOrigPos, false);
+	</script>
+  </head>
+  <body>
+    <a-scene fog="color: #bc483e; near: 0; far: 65;">
+      <a-assets>
+        <a-mixin id="cube"
+                 geometry="primitive: box; height: 0.30; width: 0.30; depth: 0.30"
+                 material="color: #FF8888;"></a-mixin>
+		 <a-mixin id="cube-collided"
+                 material="color: #F2E646;"></a-mixin>
+        <a-mixin id="cube-grabbed"
+                 material="color: #F2E646;"></a-mixin>
+
+		<a-mixin id="sphere"></a-mixin>
+        <a-mixin id="sphere-grabbed" material="color: #34ff19;"></a-mixin>
+        <a-mixin id="sphere-collided" material="color: #ffff00;"></a-mixin>
+		
+		<a-mixin id="lgt" geometry="primitive: sphere; radius: 0.075"></a-mixin>
+		<a-mixin id="med" geometry="primitive: sphere; radius: 0.050"></a-mixin>
+		<a-mixin id="hvy" geometry="primitive: sphere; radius: 0.020"></a-mixin>
+
+		<a-mixin id="weightless" material="color: #888888;"></a-mixin>
+		<a-mixin id="prop" material="color: #000000;"></a-mixin>
+		<a-mixin id="drophap" material="color: #ff0000;"></a-mixin>
+		<a-mixin id="follow" material="color: #1025c9;"></a-mixin>
+		<a-mixin id="force" material="color: #7217c6;"></a-mixin>
+				 
+				 
+      </a-assets>
+      <!-- Hands -->
+      <a-entity hand-controls="left" aabb-collider="objects: .sphere;" multigrab></a-entity>
+      <a-entity hand-controls="right" aabb-collider="objects: .sphere;" multigrab></a-entity>
+
+	  <!-- scene -->
+      <a-entity>
+	    <!-- objects to grab -->
+		<a-entity position="0.2 0.3 1" rotation="0 0 0">
+			<a-entity class="cube" mixin="cube" position="-0.049 0.445 -1.203" scale="4.500 0.165 2.629"></a-entity>
+			
+			<a-entity class="sphere" grabtype="weightless" grabweight="0.20" mixin="sphere weightless hvy" position="-0.5 0.618 -1.0"></a-entity>
+			<a-entity class="sphere" grabtype="weightless" grabweight="0.50" mixin="sphere weightless med" position="-0.5 0.618 -1.2"></a-entity>
+			<a-entity class="sphere" grabtype="weightless" grabweight="0.75" mixin="sphere weightless lgt" position="-0.5 0.618 -1.4"></a-entity>
+			
+			<a-entity class="sphere" grabtype="grabprop" grabweight="0.20" mixin="sphere prop hvy" position="-0.3 0.618 -1.0"></a-entity>
+			<a-entity class="sphere" grabtype="grabprop" grabweight="0.50" mixin="sphere prop med" position="-0.3 0.618 -1.2"></a-entity>
+			<a-entity class="sphere" grabtype="grabprop" grabweight="0.75" mixin="sphere prop lgt" position="-0.3 0.618 -1.4"></a-entity>
+			
+			<a-entity class="sphere" grabtype="grabhap" grabweight="0.20" mixin="sphere drophap hvy" position="-0.1 0.618 -1.0"></a-entity>
+			<a-entity class="sphere" grabtype="grabhap" grabweight="0.50" mixin="sphere drophap med" position="-0.1 0.618 -1.2"></a-entity>
+			<a-entity class="sphere" grabtype="grabhap" grabweight="0.75" mixin="sphere drophap lgt" position="-0.1 0.618 -1.4"></a-entity>
+			
+			<a-entity class="sphere" grabtype="grabfollow" grabweight="0.20" mixin="sphere follow hvy" position="0.1 0.618 -1.0"></a-entity>
+			<a-entity class="sphere" grabtype="grabfollow" grabweight="0.50" mixin="sphere follow med" position="0.1 0.618 -1.2"></a-entity>
+			<a-entity class="sphere" grabtype="grabfollow" grabweight="0.75" mixin="sphere follow lgt" position="0.1 0.618 -1.4"></a-entity>
+			
+			<a-entity class="sphere" grabtype="grabforce" grabweight="0.20" mixin="sphere force hvy" position="0.3 0.618 -1.0"></a-entity>
+			<a-entity class="sphere" grabtype="grabforce" grabweight="0.50" mixin="sphere force med" position="0.3 0.618 -1.2"></a-entity>
+			<a-entity class="sphere" grabtype="grabforce" grabweight="0.75" mixin="sphere force lgt" position="0.3 0.618 -1.4"></a-entity>
+		</a-entity>
+
+
+        <!-- Environment -->
+        <a-entity id="sky"
+                  geometry="primitive: sphere; radius: 65;"
+                  material="shader: skyGradient; colorTop: #000A80; colorBottom: #5AA071; side: back"></a-entity>
+         <a-entity ground></a-entity>
+         <a-entity light="type: point; color: #f4f4f4; intensity: 0.2; distance: 0" position="8 10 18"></a-entity>
+         <a-entity light="type: point; color: #f4f4f4; intensity: 0.6; distance: 0" position="-8 10 -18"></a-entity>
+         <a-entity light="type: ambient; color: #f4f4f4; intensity: 0.4;" position="-8 10 -18"></a-entity>
+      </a-entity>
+	  <a-camera></a-camera>
+      <!--<a-camera position ="0 0.831 -1.223" rotation="-55.577 180.000 18.449"> </a-camera>-->
+
+    </a-scene>
+  </body>
+</html>
